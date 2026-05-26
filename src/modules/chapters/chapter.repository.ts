@@ -1,6 +1,4 @@
-// src/modules/chapters/chapter.repository.ts
-
-import { Types, ClientSession } from 'mongoose';
+import { ClientSession } from 'mongoose';
 import Chapter, { IChapter } from './chapter.model';
 import Lecture from '../lectures/lecture.model';
 
@@ -9,15 +7,17 @@ import Lecture from '../lectures/lecture.model';
 
 export const findChapterById = (chapterId: string, session?: ClientSession): Promise<IChapter | null> => {
   return Chapter.findById(chapterId)
-    .lean() // OPTIMIZATION: Use lean for better performance
-    .session(session || null);
+    .session(session || null)
+    .lean()
+    .exec() as unknown as Promise<IChapter | null>;
 };
 
 export const findChaptersByCourse = (courseId: string, session?: ClientSession): Promise<IChapter[]> => {
   return Chapter.find({ course: courseId })
     .sort({ order: 1 })
-    .lean() // OPTIMIZATION: Use lean for better performance
-    .session(session || null);
+    .session(session || null)
+    .lean()
+    .exec() as unknown as Promise<IChapter[]>;
 };
 
 
@@ -28,30 +28,35 @@ export const createChapter = (data: Partial<IChapter>, session?: ClientSession):
     if (res.length === 0) {
       throw new Error("Repository failed to create chapter document.");
     }
-    return res[0]!;
+    return res[0] as unknown as IChapter;
   });
 };
 
 export const updateChapterById = (
-  chapterId: string, 
-  updateData: Partial<IChapter>, 
+  chapterId: string,
+  updateData: Partial<IChapter>,
   session?: ClientSession
 ): Promise<IChapter | null> => {
-  return Chapter.findByIdAndUpdate(chapterId, updateData, { 
-    new: true, 
-    runValidators: true 
-  }).session(session || null);
+  return Chapter.findByIdAndUpdate(chapterId, updateData, {
+    new: true,
+    runValidators: true
+  })
+    .session(session || null)
+    .lean()
+    .exec() as unknown as Promise<IChapter | null>;
 };
 
 export const deleteChapterById = (chapterId: string, session?: ClientSession): Promise<IChapter | null> => {
-  return Chapter.findByIdAndDelete(chapterId).session(session || null);
+  return Chapter.findByIdAndDelete(chapterId)
+    .session(session || null)
+    .lean()
+    .exec() as unknown as Promise<IChapter | null>;
 };
 
 
 // --- CASCADING Operations ---
 
 export const deleteChapterDependencies = async (chapterId: string, session: ClientSession): Promise<void> => {
-  // OPTIMIZATION: Use parallel deletion for better performance
   await Promise.all([
     Lecture.deleteMany({ chapter: chapterId }).session(session)
   ]);
@@ -60,5 +65,7 @@ export const deleteChapterDependencies = async (chapterId: string, session: Clie
 
 // OPTIMIZATION: Get chapter count efficiently
 export const getChapterCountByCourse = (courseId: string, session?: ClientSession): Promise<number> => {
-  return Chapter.countDocuments({ course: courseId }).session(session || null);
+  return Chapter.countDocuments({ course: courseId })
+    .session(session || null)
+    .exec();
 };
