@@ -108,12 +108,14 @@ export const getCertificateStatsHandler = catchAsync(async (req: CertificateAuth
         return sendError(res, 'Insufficient permissions', 403);
     }
 
-    const { startDate, endDate, courseId } = req.query;
-    const options = {
-        startDate,
-        endDate,
-        courseId
-    };
+    const startDate = req.query.startDate as string | undefined;
+const endDate = req.query.endDate as string | undefined;
+const courseId = req.query.courseId as string | undefined;
+const options = {
+    startDate,
+    endDate,
+    courseId
+};
 
     const result = await certificateService.getCertificateStatsService(options);
     

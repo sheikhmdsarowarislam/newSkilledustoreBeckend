@@ -151,7 +151,7 @@ export const getCourseReviewStatsHandler = catchAsync(async (req: ReviewAuthRequ
 });
 
 export const getInstructorReviewsHandler = catchAsync(async (req: AuthRequest, res: Response) => {
-    const instructorId = req.params.instructorId;
+    const instructorId = req.params.instructorId as string;
     
     if (!instructorId) {
         return sendError(res, 'Instructor ID is required', 400);
