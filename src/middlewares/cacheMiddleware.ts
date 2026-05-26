@@ -22,7 +22,7 @@ const refreshCache = async (queryOptions: any, cacheKey: string) => {
 export const cacheMiddleware = (baseKey: string, options: CacheMiddlewareOptions = {}) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const params: Record<string, string | number> = {};
+      const params: Record<string, string> = {};
 
       if (options.param) {
         const value = req.params[options.param];
