@@ -12,6 +12,11 @@ cloudinary.config({
     api_secret: config.cloudinary_api_secret,
 })
 
-connectDB();
+const PORT = config.port || 8000;
 
-export default app;
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+};
+
+startServer();
