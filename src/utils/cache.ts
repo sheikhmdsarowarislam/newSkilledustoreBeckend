@@ -12,7 +12,7 @@ export async function setCache(key: string, value: any, ttlSeconds = DEFAULT_TTL
 export async function getCacheWithTTL<T = any>(key: string): Promise<{ data: T | null; ttl: number } | null> {
   const namespaced = namespacedKey(key);
   
-  const result = await redis.multi().get(namespaced).ttl(namespaced).exec() as [string | null, string | null][];
+  const result = await redis.multi().get(namespaced).ttl(namespaced).exec() as unknown as [string | null, string | null][];
 
   if (!result || !result[0] || !result[1]) {
     return null;

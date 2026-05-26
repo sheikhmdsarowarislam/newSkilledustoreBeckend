@@ -56,10 +56,10 @@ export const reorderCourseChaptersWithConflictResolution = async (
     }
 
     // OPTIMIZATION: Create lookup map for O(1) validation
-    const chapterMap = new Map(allChapters.map(chapter => [
-        (chapter._id as any).toString(), 
-        { order: chapter.order, createdAt: (chapter as any).createdAt }
-    ]));
+    const chapterMap = new Map<string, { order: number; createdAt: any }>(allChapters.map(chapter => [
+    (chapter._id as any).toString(), 
+    { order: chapter.order as number, createdAt: (chapter as any).createdAt }
+]));
 
     // OPTIMIZATION: Batch validation - check all chapters at once
     const missingChapters = orderList.filter(({ chapterId }) => !chapterMap.has(chapterId));
@@ -70,10 +70,10 @@ export const reorderCourseChaptersWithConflictResolution = async (
 
     // OPTIMIZATION: Simplified reordering algorithm with better performance
     const allItems = Array.from(chapterMap.entries()).map(([id, data]) => ({
-        id,
-        order: data.order,
-        createdAt: data.createdAt
-    }));
+    id: id as string,
+    order: data.order as number,
+    createdAt: data.createdAt
+}));
 
     // Create final ordering map
     const finalOrdering = new Map<string, number>();
