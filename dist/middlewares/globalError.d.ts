@@ -1,2 +1,0 @@
-export declare const globalErrorHandler: (err: any, req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) => import("express").Response<any, Record<string, any>>;
-//# sourceMappingURL=globalError.d.ts.map
